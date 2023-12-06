@@ -1,13 +1,12 @@
 ﻿namespace Utilities
+type Matrix = 
+    {
+        SizeX : int
+        SizeY : int
+        Data : string[]
+    }
 
 module Matrix =
-    type Matrix = 
-        {
-            SizeX : int
-            SizeY : int
-            Data : string[]
-        }
-
     let create sizeX sizeY (initial : char) = 
         {
             SizeX = sizeX;
