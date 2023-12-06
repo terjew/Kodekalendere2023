@@ -31,6 +31,8 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Utilities", "Utilities\Util
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Dag05", "KnowitJulekalender2023\Dag05\Dag05.fsproj", "{720D6C58-DDF9-4DFA-944E-DCF4215CEEF4}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Dag06", "KnowitJulekalender2023\Dag06\Dag06.fsproj", "{199342CF-5624-4076-934E-A5F3F202E606}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{720D6C58-DDF9-4DFA-944E-DCF4215CEEF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{720D6C58-DDF9-4DFA-944E-DCF4215CEEF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{720D6C58-DDF9-4DFA-944E-DCF4215CEEF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{199342CF-5624-4076-934E-A5F3F202E606}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{199342CF-5624-4076-934E-A5F3F202E606}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{199342CF-5624-4076-934E-A5F3F202E606}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{199342CF-5624-4076-934E-A5F3F202E606}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,6 +103,7 @@ Global
 		{55107072-F72C-465E-B62A-7E7792E34332} = {9ACFBD9C-EB00-4ED0-8606-97CCD72DC511}
 		{B33434B3-21AB-4655-917B-74DE12ECBB83} = {62D91AFD-AAD8-49E6-9FFF-E82FC373A8CB}
 		{720D6C58-DDF9-4DFA-944E-DCF4215CEEF4} = {9ACFBD9C-EB00-4ED0-8606-97CCD72DC511}
+		{199342CF-5624-4076-934E-A5F3F202E606} = {9ACFBD9C-EB00-4ED0-8606-97CCD72DC511}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3F8C70CD-0C74-412C-A6CB-6FC5C4FA2EE3}
