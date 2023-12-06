@@ -1,5 +1,4 @@
 ﻿namespace Utilities
-open Utilities.String
 
 module Matrix =
     type Matrix = 
@@ -26,7 +25,7 @@ module Matrix =
         }
 
     let fromString (str : string) =
-        str |> splitWithAny "\r\n" |> fromStringArray
+        str |> String.splitWithAny "\r\n" |> fromStringArray
 
     let fromStrings strings = 
         let data = Seq.toArray strings

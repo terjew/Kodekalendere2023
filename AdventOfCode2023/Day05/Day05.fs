@@ -23,7 +23,7 @@ let createMapping source destination ranges =
         Source = source
         Destination = destination
         Ranges = ranges |> String.splitWithAny "\r\n"
-                        |> Seq.map (Regex.transformGroups "(\d+) (\d+) (\d+)" Regex.asInt64)
+                        |> Seq.map (Regex.transformGroups "(\d+) (\d+) (\d+)" Value.asInt64)
                         |> Seq.map createRange
                         |> List.ofSeq
     })
@@ -50,7 +50,7 @@ let maps = File.ReadAllText("input.txt")
 
 let seeds = File.ReadLines("input.txt") 
             |> Seq.head 
-            |> Regex.transformMatches "\d+" Regex.asInt64
+            |> Regex.transformMatches "\d+" Value.asInt64
             |> List.ofSeq
 
 seeds

@@ -1,7 +1,7 @@
 ﻿namespace Utilities
 open System.Text.RegularExpressions
 
-module Regex =
+module Value = 
     type ValueUnion =
         | MatchValue of m : Match
         | GroupValue of g : Group
@@ -20,21 +20,6 @@ module Regex =
         | MatchCollectionValue m -> m |> Seq.map MatchValue
         | GroupCollectionValue g -> g |> Seq.skip 1 |> Seq.map GroupValue
 
-    let matches pattern input =
-        Regex.Matches(input, pattern)
-
-    let matchesWithOptions pattern options input=
-        Regex.Matches(input, pattern, options)
-
-    let transformWith transform collection =
-        collection |> getElements |> Seq.map transform
-
-    let transformMatches pattern transform input =
-        Regex.Matches(input, pattern) |> MatchCollectionValue |> transformWith transform
-
-    let transformGroups pattern transform input =
-        Regex.Match(input, pattern).Groups |> GroupCollectionValue |> transformWith transform
-
     let asInt64 (union : ValueUnion) =
         getValue union |> int64
 
@@ -43,3 +28,21 @@ module Regex =
 
     let asFloat (union : ValueUnion) =
         getValue union |> float
+
+module Regex =
+    
+    let matches pattern input =
+        Regex.Matches(input, pattern)
+
+    let matchesWithOptions pattern options input=
+        Regex.Matches(input, pattern, options)
+
+    let transformWith transform collection =
+        collection |> Value.getElements |> Seq.map transform
+
+    let transformMatches pattern transform input =
+        Regex.Matches(input, pattern) |> Value.MatchCollectionValue |> transformWith transform
+
+    let transformGroups pattern transform input =
+        Regex.Match(input, pattern).Groups |> Value.GroupCollectionValue |> transformWith transform
+
