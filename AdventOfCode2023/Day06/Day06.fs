@@ -1,5 +1,5 @@
 ﻿open System.IO
-open Utilities.Regex
+open Utilities
 open System
 
 let q (a, b, c) = Math.Sqrt(b*b - 4.0*a*c)
@@ -10,8 +10,8 @@ let countWinningMoves (time,distance) =
     int(ceil(x2)) - int(floor(x1)) - 1
     
 let lines = File.ReadLines("input.txt") |> List.ofSeq
-let times = lines[0] |> transformMatches "\d+" asInt64
-let distances = lines[1] |> transformMatches "\d+" asInt64
+let times = lines[0] |> Regex.transformMatches "\d+" Regex.asInt64
+let distances = lines[1] |> Regex.transformMatches "\d+" Regex.asInt64
 
 Seq.zip times distances |> Seq.map countWinningMoves 
 |> Seq.fold (fun product element ->  element * product |> int) 1 

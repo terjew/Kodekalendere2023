@@ -6,7 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Library.fs" />
+    <Compile Include="String.fs" />
+    <Compile Include="Matrix.fs" />
+    <Compile Include="Regex.fs" />
   </ItemGroup>
 
 </Project>

@@ -1,10 +1,6 @@
 ﻿namespace Utilities
 open System.Text.RegularExpressions
 
-module String = 
-    let split (separators : char[]) (str : string) =
-        str.Split(separators, System.StringSplitOptions.RemoveEmptyEntries)
-
 module Regex =
     type ValueUnion =
         | MatchValue of m : Match

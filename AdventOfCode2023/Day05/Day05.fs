@@ -1,6 +1,5 @@
 ﻿open System.IO
-open Utilities.Regex
-open Utilities.String
+open Utilities
 open System.Text.RegularExpressions
 
 type MappingRange = {
@@ -23,8 +22,8 @@ let createMapping source destination ranges =
     (source, {
         Source = source
         Destination = destination
-        Ranges = ranges |> split [|'\r';'\n'|]
-                        |> Seq.map (transformGroups "(\d+) (\d+) (\d+)" asInt64)
+        Ranges = ranges |> String.splitWithAny "\r\n"
+                        |> Seq.map (Regex.transformGroups "(\d+) (\d+) (\d+)" Regex.asInt64)
                         |> Seq.map createRange
                         |> List.ofSeq
     })
@@ -45,14 +44,13 @@ let rec map maps current target number =
     | _ -> map maps mapping.Destination target mappedNumber
 
 let maps = File.ReadAllText("input.txt") 
-        |> matchesWithOptions "(?<source>\w+)-to-(?<destination>\w+) map:(?<ranges>[\s\d]+)" RegexOptions.Singleline
+        |> Regex.matchesWithOptions "(?<source>\w+)-to-(?<destination>\w+) map:(?<ranges>[\s\d]+)" RegexOptions.Singleline
         |> Seq.map (fun m -> createMapping m.Groups["source"].Value m.Groups["destination"].Value m.Groups["ranges"].Value)
         |> Map.ofSeq 
 
 let seeds = File.ReadLines("input.txt") 
             |> Seq.head 
-            |> matches "\d+" 
-            |> Seq.map (fun m -> m.Value |> int64)
+            |> Regex.transformMatches "\d+" Regex.asInt64
             |> List.ofSeq
 
 seeds

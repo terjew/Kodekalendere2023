@@ -1,5 +1,6 @@
 ﻿open System.IO
 open System.Text.RegularExpressions
+open Utilities
 
 type PartNumber =
     {

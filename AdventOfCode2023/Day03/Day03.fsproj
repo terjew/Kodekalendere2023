@@ -12,10 +12,11 @@
     <Content Include="input.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="Matrix.fs" />
     <Compile Include="Day03.fs" />
   </ItemGroup>
 
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\Utilities\Utilities.fsproj" />
+  </ItemGroup>
 
 </Project>
