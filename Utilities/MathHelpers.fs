@@ -2,7 +2,7 @@
 
 module MathHelpers = 
     let generatePrimeArray limit =
-        let primeArray = Array.create limit true
+        let primeArray = Array.create (limit + 1) true
         let rec setArray l h s x =
             if l <= h then
                 primeArray.[l] <- x
@@ -12,6 +12,13 @@ module MathHelpers =
             if primeArray.[i]
             then setArray (i + i) (primeArray.Length - 1) i false
         primeArray
+
+    let isPrime a =
+        match a with
+        | a when a < 2 -> false
+        | a ->
+            let divisors = seq { 2 .. int (sqrt (float a)) }
+            not <| Seq.exists (fun d -> a % d = 0) divisors
 
     let rec digitSum number carry =
         let digit = number % 10

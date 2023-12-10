@@ -31,6 +31,9 @@ module Value =
 
 module Regex =
     
+    let matchPattern pattern input =
+        Regex.Match(input, pattern)
+
     let matches pattern input =
         Regex.Matches(input, pattern)
 
