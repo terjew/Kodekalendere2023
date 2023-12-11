@@ -1,4 +1,5 @@
 ﻿namespace Utilities
+
 type Matrix = 
     {
         SizeX : int
@@ -30,7 +31,12 @@ module Matrix =
         let data = Seq.toArray strings
         fromStringArray data
 
-    let get x y matrix =
+    let equal matrix matrix2 = 
+        matrix.SizeX = matrix2.SizeX &&
+        matrix.SizeY = matrix2.SizeY &&
+        matrix.Data = matrix2.Data
+        
+    let get matrix (x,y) =
         matrix.Data[y][x]
 
     let rows matrix =
@@ -38,10 +44,37 @@ module Matrix =
             for row in 0 .. matrix.SizeY - 1 do yield matrix.Data[row]
         }
 
-    let row y matrix =
+    let row matrix y =
         matrix.Data[y]
 
-    let neighborCoords x y matrix = 
+    let allPos matrix =
+        seq {
+            for y in 0 .. matrix.SizeY - 1 do 
+                for x in 0 .. matrix.SizeX - 1 do yield (x,y)
+        }
+
+    let map func matrix =
+
+        let transformRow matrix y func =
+            seq { 
+                for x in 0 .. matrix.SizeX - 1 do yield (func matrix (x,y) )
+            } |> Array.ofSeq |> System.String
+
+        let transformedRows = seq {
+            for y in 0 .. matrix.SizeY - 1 do yield transformRow matrix y func
+        }
+        {
+            SizeX = matrix.SizeX
+            SizeY = matrix.SizeY
+            Data = Array.ofSeq transformedRows
+        }
+
+    let find value matrix =
+        matrix 
+        |> allPos 
+        |> Seq.find (fun pos -> value = get matrix pos)
+
+    let neighborCoordsDiagonal matrix (x,y)  = 
         let minx = if x = 0 then x else x - 1
         let miny = if y = 0 then y else y - 1
         let maxx = if x = matrix.SizeX - 1 then x else x + 1
@@ -52,11 +85,30 @@ module Matrix =
                 if not (ix = x && iy = y) then yield (ix, iy)
         }
 
-    let neighbors x y matrix =
-        neighborCoords x y matrix
-        |> Seq.map (fun (x,y) -> get x y matrix)
+    let neighborsDiagonal matrix pos =
+        neighborCoordsDiagonal matrix pos
+        |> Seq.map (get matrix)
 
-    let modifiedAt x y value matrix =
+    let isInside matrix (x,y) =
+        x >= 0 && x < matrix.SizeX && y >= 0 && y < matrix.SizeY
+
+    let offsetPos (x,y) (xOffset,yOffset) =
+        (x + xOffset, y + yOffset)
+
+    let neighborInDirection pos dir =
+        (dir, dir |> Direction.offset |> offsetPos pos)
+
+    let neighborCoordsWithDirection matrix pos =
+        Direction.cardinal 
+        |> Seq.map (neighborInDirection pos)
+        |> Map.ofSeq
+        |> Map.filter (fun dir pos -> isInside matrix pos)
+
+    let neighborsWithDirection matrix pos =
+        neighborCoordsWithDirection matrix pos
+        |> Map.map (fun dir pos -> get matrix pos)
+
+    let withValueAt matrix (x,y) value =
         let updatedLine = matrix.Data[y] |> String.mapi(fun i char -> if i=x then value else char)
         let updatedArray = matrix.Data |> Array.mapi(fun i line -> if i=y then updatedLine else line)
         {
@@ -67,5 +119,7 @@ module Matrix =
 
     let print matrix =
         printfn "Matrix[%d,%d]" matrix.SizeX matrix.SizeY
+        printfn "" 
         for y in 0 .. matrix.SizeY - 1 do
             printfn "%s" matrix.Data[y]
+        printfn "" 

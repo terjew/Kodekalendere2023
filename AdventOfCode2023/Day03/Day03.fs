@@ -31,14 +31,14 @@ let getParts matrix =
     |> Seq.mapi getPartsInRow
     |> Seq.collect (fun pn -> pn)
 
-let isDigit x y matrix = 
-    match Matrix.get x y matrix with 
+let isDigit matrix (x,y)= 
+    match Matrix.get matrix (x,y) with 
     | d when '0' <= d && d <= '9' -> true
     | _ -> false
 
-let getNumber x y matrix = 
-    let left = seq {0 .. x - 1} |> Seq.tryFindBack (fun ix -> not (isDigit ix y matrix))
-    let row = Matrix.row y matrix
+let getNumber matrix (x,y) =
+    let left = seq {0 .. x - 1} |> Seq.tryFindBack (fun ix -> not (isDigit matrix (ix,y)))
+    let row = Matrix.row matrix y
     let m = Regex.Match(row.Substring(left |> Option.defaultValue 0), "\d+")
     {
         X = m.Index
@@ -47,9 +47,10 @@ let getNumber x y matrix =
     }
         
 let getPartNumbers matrix part =
-    Matrix.neighborCoords part.X part.Y matrix
-    |> Seq.filter (fun (x,y) -> isDigit x y matrix)
-    |> Seq.map (fun (x,y) -> getNumber x y matrix)
+    (part.X, part.Y)
+    |> Matrix.neighborCoordsDiagonal matrix 
+    |> Seq.filter (isDigit matrix)
+    |> Seq.map (getNumber matrix)
     |> Set.ofSeq
 
 
