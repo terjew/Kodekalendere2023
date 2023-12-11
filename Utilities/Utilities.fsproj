@@ -6,11 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="SequenceHelper.fs" />
     <Compile Include="Direction.fs" />
+    <Compile Include="Coordinate.fs" />
     <Compile Include="MathHelpers.fs" />
     <Compile Include="String.fs" />
-    <Compile Include="Matrix.fs" />
     <Compile Include="Regex.fs" />
+    <Compile Include="Matrix.fs" />
   </ItemGroup>
 
 </Project>

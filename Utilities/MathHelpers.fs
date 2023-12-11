@@ -29,3 +29,6 @@ module MathHelpers =
     let solveQuadraticEquation (a,b,c) = 
         let q = System.Math.Sqrt(b*b - 4.0*a*c)
         ((-b + q)/(2.0*a), (-b - q)/(2.0*a))
+    
+    let ordered v1 v2 =
+        (min v1 v2, max v1 v2)

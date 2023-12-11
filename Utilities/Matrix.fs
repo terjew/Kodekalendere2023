@@ -8,6 +8,8 @@ type Matrix =
     }
 
 module Matrix =
+
+    //Creation
     let create sizeX sizeY (initial : char) = 
         {
             SizeX = sizeX;
@@ -31,21 +33,39 @@ module Matrix =
         let data = Seq.toArray strings
         fromStringArray data
 
+    //Equality
     let equal matrix matrix2 = 
         matrix.SizeX = matrix2.SizeX &&
         matrix.SizeY = matrix2.SizeY &&
         matrix.Data = matrix2.Data
-        
+       
+    //Lookups
+    let isInside matrix (x,y) =
+        x >= 0 && x < matrix.SizeX && y >= 0 && y < matrix.SizeY
+
     let get matrix (x,y) =
         matrix.Data[y][x]
+    
+    let row matrix y =
+        matrix.Data[y]
+
+    let column matrix x =
+        matrix.Data 
+        |> Seq.map (fun str -> str[x])
+        |> Seq.toArray
+        |> System.String
+
+    //Iteration
+    let rowIndices matrix = 
+        seq {0 .. matrix.SizeY - 1}
+
+    let columnIndices matrix = 
+        seq {0 .. matrix.SizeX - 1}
 
     let rows matrix =
         seq {
-            for row in 0 .. matrix.SizeY - 1 do yield matrix.Data[row]
+            for row in rowIndices matrix do yield matrix.Data[row]
         }
-
-    let row matrix y =
-        matrix.Data[y]
 
     let allPos matrix =
         seq {
@@ -53,27 +73,27 @@ module Matrix =
                 for x in 0 .. matrix.SizeX - 1 do yield (x,y)
         }
 
-    let map func matrix =
-
-        let transformRow matrix y func =
-            seq { 
-                for x in 0 .. matrix.SizeX - 1 do yield (func matrix (x,y) )
-            } |> Array.ofSeq |> System.String
-
-        let transformedRows = seq {
-            for y in 0 .. matrix.SizeY - 1 do yield transformRow matrix y func
-        }
-        {
-            SizeX = matrix.SizeX
-            SizeY = matrix.SizeY
-            Data = Array.ofSeq transformedRows
-        }
-
     let find value matrix =
         matrix 
         |> allPos 
         |> Seq.find (fun pos -> value = get matrix pos)
 
+    let findAll value matrix =
+        matrix 
+        |> allPos 
+        |> Seq.filter (fun pos -> value = get matrix pos)
+
+    let findRowsMatching pattern matrix =
+        rowIndices matrix
+        |> Seq.filter (fun i -> row matrix i |> Regex.isMatchPattern pattern)
+        |> Set.ofSeq
+
+    let findColumnsMatching pattern matrix =
+        columnIndices matrix
+        |> Seq.filter (fun i -> column matrix i |> Regex.isMatchPattern pattern)
+        |> Set.ofSeq
+
+    //Neighbor cells
     let neighborCoordsDiagonal matrix (x,y)  = 
         let minx = if x = 0 then x else x - 1
         let miny = if y = 0 then y else y - 1
@@ -89,18 +109,10 @@ module Matrix =
         neighborCoordsDiagonal matrix pos
         |> Seq.map (get matrix)
 
-    let isInside matrix (x,y) =
-        x >= 0 && x < matrix.SizeX && y >= 0 && y < matrix.SizeY
-
-    let offsetPos (x,y) (xOffset,yOffset) =
-        (x + xOffset, y + yOffset)
-
-    let neighborInDirection pos dir =
-        (dir, dir |> Direction.offset |> offsetPos pos)
-
+    
     let neighborCoordsWithDirection matrix pos =
         Direction.cardinal 
-        |> Seq.map (neighborInDirection pos)
+        |> Seq.map (Coordinate.neighbor pos)
         |> Map.ofSeq
         |> Map.filter (fun dir pos -> isInside matrix pos)
 
@@ -108,6 +120,8 @@ module Matrix =
         neighborCoordsWithDirection matrix pos
         |> Map.map (fun dir pos -> get matrix pos)
 
+
+    //Transforming
     let withValueAt matrix (x,y) value =
         let updatedLine = matrix.Data[y] |> String.mapi(fun i char -> if i=x then value else char)
         let updatedArray = matrix.Data |> Array.mapi(fun i line -> if i=y then updatedLine else line)
@@ -117,6 +131,44 @@ module Matrix =
             Data = updatedArray
         }
 
+    let map func matrix =
+        let transformRow matrix y func =
+            seq { 
+                for x in 0 .. matrix.SizeX - 1 do yield (func matrix (x,y) )
+            } |> Array.ofSeq |> System.String
+
+        let transformedRows = seq {
+            for y in 0 .. matrix.SizeY - 1 do yield transformRow matrix y func
+        }
+        {
+            SizeX = matrix.SizeX
+            SizeY = matrix.SizeY
+            Data = Array.ofSeq transformedRows
+        }
+
+
+    let withDuplicatedRows matrix rowsToDuplicate =
+        let data = matrix 
+                    |> rows 
+                    |> SequenceHelper.duplicateIndices rowsToDuplicate
+                    
+        {
+            SizeX = matrix.SizeX
+            SizeY = matrix.SizeY + rowsToDuplicate.Count
+            Data = Array.ofSeq data
+        }
+
+    let withDuplicatedColumns matrix columnsToDuplicate =
+        let data = matrix 
+                    |> rows 
+                    |> Seq.map (fun row -> row |> SequenceHelper.duplicateIndices columnsToDuplicate |> Seq.toArray |> System.String)
+        {
+            SizeX = matrix.SizeX + columnsToDuplicate.Count
+            SizeY = matrix.SizeY 
+            Data = Array.ofSeq data
+        }
+
+    //Printing
     let print matrix =
         printfn "Matrix[%d,%d]" matrix.SizeX matrix.SizeY
         printfn "" 

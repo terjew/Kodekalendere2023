@@ -30,6 +30,9 @@ module Value =
         getValue union |> float
 
 module Regex =
+
+    let isMatchPattern pattern input =
+        Regex.IsMatch(input, pattern)
     
     let matchPattern pattern input =
         Regex.Match(input, pattern)

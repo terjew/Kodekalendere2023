@@ -33,7 +33,7 @@ let hasConnectionTo matrix pos direction =
 let areConnectionsConnectedBack matrix value pos =
     value 
     |> connections
-    |> Seq.map (Matrix.neighborInDirection pos)
+    |> Seq.map (Coordinate.neighbor pos)
     |> Seq.filter (fun (dir,pos) -> Matrix.isInside matrix pos)
     |> Seq.map (fun (dir,pos) -> (dir,hasConnectionTo matrix pos (Direction.oposite dir)))
     |> Map.ofSeq
@@ -43,7 +43,7 @@ let rec traverse matrix currentPos incomingDir tail =
     match currentValue with
     | 'S' -> tail //loop complete
     | _ ->  let nextDir = nextDir currentValue incomingDir
-            let (_,nextPos) = Matrix.neighborInDirection currentPos nextDir
+            let (_,nextPos) = Coordinate.neighbor currentPos nextDir
             traverse matrix nextPos nextDir (nextPos :: tail)
    
 let getStartDirections matrix pos =
@@ -54,7 +54,7 @@ let getStartDirections matrix pos =
 let getMainLoop matrix = 
     let start = matrix |> Matrix.find 'S'
     let startDirection = getStartDirections matrix start |> Seq.head
-    let (_,startPos) = Matrix.neighborInDirection start startDirection
+    let (_,startPos) = Coordinate.neighbor start startDirection
     traverse matrix startPos startDirection [startPos] 
 
 let renderStart matrix pos =

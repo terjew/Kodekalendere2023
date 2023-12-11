@@ -4,7 +4,7 @@ let rec pairs list = seq {
     match list with 
     | head::tail -> for element in tail do
                         yield head, element
-                        yield! pairs tail
+                    yield! pairs tail
     | _ -> () 
     } 
 
