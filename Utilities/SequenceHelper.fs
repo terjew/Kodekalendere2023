@@ -18,6 +18,44 @@ module SequenceHelper =
                                         | true -> seq{r; r}
                                         | false -> seq{r} )
 
+    //https://www.fssnip.net/nr/title/Split-a-list-using-a-separator
+    /// Split a list into chunks using the specified separator
+    /// This takes a list and returns a list of lists (chunks)
+    /// that represent individual groups, separated by the given
+    /// separator 'v'
+    let splitByValue v list =
+      let yieldRevNonEmpty list = 
+        if list = [] then []
+        else [List.rev list]
+
+      let rec loop groupSoFar list = seq { 
+        match list with
+        | [] -> yield! yieldRevNonEmpty groupSoFar
+        | head::tail when head = v ->
+            yield! yieldRevNonEmpty groupSoFar
+            yield! loop [] tail
+        | head::tail ->
+            yield! loop (head::groupSoFar) tail }
+      loop [] list |> List.ofSeq
+
+    /// Split a list into chunks using the specified separator function
+    /// This takes a list and returns a list of lists (chunks)
+    /// that represent individual groups, separated by the given
+    /// separator function 'func'
+    let splitByFunc func list =
+      let yieldRevNonEmpty list = 
+        if list = [] then []
+        else [List.rev list]
+
+      let rec loop groupSoFar list = seq { 
+        match list with
+        | [] -> yield! yieldRevNonEmpty groupSoFar
+        | head::tail when func(head) ->
+            yield! yieldRevNonEmpty groupSoFar
+            yield! loop [] tail
+        | head::tail ->
+            yield! loop (head::groupSoFar) tail }
+      loop [] list |> List.ofSeq
 
     //from https://stackoverflow.com/questions/4495597/combinations-and-permutations-in-f
 
