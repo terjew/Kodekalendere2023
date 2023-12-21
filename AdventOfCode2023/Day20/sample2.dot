@@ -1,0 +1,10 @@
+﻿digraph sample {
+    node [shape=ellipse] broadcaster, output;
+    node [shape=parallelogram] a,b;
+    node [shape=triangle] inv,con;
+broadcaster -> a
+a -> inv, con
+inv -> b
+b -> con
+con -> output
+}
