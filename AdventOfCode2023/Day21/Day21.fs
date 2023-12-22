@@ -2,7 +2,7 @@
 open Utilities
 
 let expand board =
-    let allOs = board |> Matrix.findAll 'O'
+    let allOs = board |> Matrix.findAllOf ['O';'S']
     let nextSteps = allOs 
                     |> Seq.map (fun coord -> Matrix.neighborCoordsWithDirection board coord)
                     |> Seq.collect (fun m -> m.Values)
@@ -18,11 +18,8 @@ let expand board =
 
 let board = File.ReadLines("input.txt") |> Matrix.fromStrings
 
-let start = board |> Matrix.find 'S'
-let boardWithO =  Matrix.withValueAt board start 'O'
-
 seq {1..64}
-|> Seq.fold (fun s a -> expand s) boardWithO
+|> Seq.fold (fun s a -> expand s) board
 |> Matrix.findAll 'O'
 |> Seq.length
 |> Any.print

@@ -83,6 +83,11 @@ module Matrix =
         |> allPos 
         |> Seq.filter (fun pos -> value = get matrix pos)
 
+    let findAllOf seq matrix =
+        matrix 
+        |> allPos 
+        |> Seq.filter (fun pos -> seq |> Seq.contains (get matrix pos))
+
     let findRowsMatching pattern matrix =
         rowIndices matrix
         |> Seq.filter (fun i -> row matrix i |> Regex.isMatchPattern pattern)
